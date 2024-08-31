@@ -8,12 +8,10 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('pinned_links', function (Blueprint $table) {
+        Schema::create('tags', function (Blueprint $table) {
             $table->bigIncrements('id')->unsigned();
             $table->string('guid', 36);
-            $table->text('url');
-            $table->string('title', 255);
-            $table->text('comments');
+            $table->string('name', 255);
             $table->nullableTimestamps();
             $table->softDeletes();
         });

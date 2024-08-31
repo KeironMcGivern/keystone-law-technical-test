@@ -1,7 +1,6 @@
 <?php
 
+use App\Http\Controllers\PinnedLinkController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [PinnedLinkController::class, 'index'])->name('pinnedLinks');

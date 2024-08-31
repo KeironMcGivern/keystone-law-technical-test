@@ -4,19 +4,21 @@ declare(strict_types=1);
 
 namespace App\Models\Concerns\PinnedLink;
 
+use App\Models\Tag;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Arr;
 
 trait HasQueryScopes
 {
-    public function scopeForTags(Builder $query, mixed $value): void
+    public function scopeForTags(Builder $query, mixed $value = null): void
     {
-        $query->when(
-            filled($value),
-            fn (Builder $query) => $query->whereJsonContains(
-                'tags',
-                is_array($value) ? $value : Arr::wrap($value)
-            )
-        );
+      $query->when(filled($value), function (Builder $query) use ($value) {
+          $query->where(function ($query) use ($value) {
+            foreach (Tag::getTagIds($value) as $tagId) {
+              $query->whereHas('tags', function ($subQuery) use ($tagId) {
+                return $subQuery->where('tags.id', $tagId);
+              });
+            }
+          })->has('tags', '=', count($value));
+      });
     }
 }

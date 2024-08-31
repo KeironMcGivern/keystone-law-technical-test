@@ -6,7 +6,10 @@ namespace App\Domain\PinnedLink\Enums;
 
 use DavidIanBonner\Enumerated\Enumerated;
 use DavidIanBonner\Enumerated\HasEnumeration;
+use Illuminate\Support\Collection;
 
+// I feel strongly typed code leads to better development practices
+// This class uses a helper package to give Enums all the functionally they need
 enum Tags: string implements Enumerated
 {
     use HasEnumeration;
@@ -20,5 +23,13 @@ enum Tags: string implements Enumerated
     public static function key(): string
     {
         return 'tags';
+    }
+
+    public static function toCheckbox(): Collection
+    {
+        return Collection::make(static::cases())->map(fn ($enum) => [
+            'value' => $enum->value,
+            'label' => $enum->line(),
+        ]);
     }
 }
